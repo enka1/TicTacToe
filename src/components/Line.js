@@ -1,15 +1,23 @@
 import React, {Component} from 'react';
-import uuidv1 from 'uuid/v1'
 
 import {Square} from './Square';
 
 export class Line extends Component {
   renderSquare() {
+    let x = -1;
     if (this.props.array) {
       return this
         .props
         .array
-        .map(value => <Square key={uuidv1()} value={value}/>)
+        .map(value => {
+          x++;
+          return <Square
+            onTick={this.props.onTick}
+            key={x}
+            x={x}
+            y={this.props.y}
+            value={value}/>;
+        })
     }
   }
   render() {

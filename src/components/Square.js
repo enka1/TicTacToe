@@ -1,18 +1,20 @@
 import React, {Component} from 'react';
-import styled from 'styled-components'
+import styled from 'styled-components';
 
 export class Square extends Component {
   renderContainer() {
     if (this.props.value === 'X') {
-      return (<i className="fas fa-times"/>)
+      return (<i className="fas fa-times"/>);
     } else if (this.props.value === 'O') {
-      return (<i className="far fa-circle"/>)
+      return (<i className="far text-danger fa-circle"/>);
     }
-    return ''
+    return '';
   }
   render() {
     return (
-      <SquareStyle className="d-flex align-items-center justify-content-center">
+      <SquareStyle
+        onClick={() => this.props.onTick(this.props.x, this.props.y)}
+        className="d-flex align-items-center justify-content-center">
         {this.renderContainer()}
       </SquareStyle>
     )
