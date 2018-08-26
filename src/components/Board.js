@@ -1,14 +1,22 @@
 import React, {Component} from 'react';
 
+let h_match = 0
+let v_match = 0
+
 import {Line} from './Line'
+
+const rule = {
+  match: 4,
+  size: 6
+}
 
 export class Board extends Component {
   constructor(props) {
     super(props)
     this.state = {
-      board: Array(3)
+      board: Array(rule.size)
         .fill(0)
-        .map(() => Array(3).fill(null)),
+        .map(() => Array(rule.size).fill(null)),
       player: 'player1'
     }
     this.onTick = this
@@ -22,16 +30,31 @@ export class Board extends Component {
       if (player === 'player1') {
         board[y][x] = 'X';
         player = 'player2';
+        this.isWin('X', board, {x, y})
       } else {
         board[y][x] = 'O';
         player = 'player1';
+        this.isWin('O', board, {x, y})
       }
       this.setState({board, player});
+
     }
   }
-  isWin(value){
-    
+  isWin(value, board, position) {
+ 
+   
+    for (let i = 0; i < rule.size; i++) {
+      if (board[position.x][i] === value) {
+        v_match++
+      } else {
+        v_match = 0
+      }
+      if (v_match === rule.match) {
+        alert('WIN')
+      }
+    }
   }
+
   renderSquare() {
     let y = -1;
     return this
