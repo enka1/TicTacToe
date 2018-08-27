@@ -1,6 +1,5 @@
 import React, {Component} from 'react';
 import styled from 'styled-components'
-import validator from 'validator'
 
 import {Line} from './Line'
 
@@ -52,7 +51,9 @@ export class Board extends Component {
     super(props)
     this.state = {
       is_game_play: true,
-      board: [],
+      board: Array(this.props.rule.size)
+        .fill(0)
+        .map(() => Array(this.props.rule.size).fill(null)),
       player: 'player1',
       rule: {
         size: 11,
@@ -64,15 +65,17 @@ export class Board extends Component {
       .onTick
       .bind(this);
   }
-  reConstructBoard() {
-    this.setState({
-      board: Array(this.state.rule.size)
-        .fill(0)
-        .map(() => Array(this.state.rule.size).fill(null))
-    })
-  }
-  componentDidMount() {
-    this.reConstructBoard()
+  componentWillReceiveProps(nextProps) {
+    if (nextProps.rule !== this.props.rule) {
+      this.setState({
+        board: Array(nextProps.rule.size)
+          .fill(0)
+          .map(() => Array(nextProps.rule.size).fill(null)),
+        is_game_play: true,
+        win_nodes: [],
+        player: 'player1'
+      })
+    }
   }
   onTick(x, y) {
     let board = this.state.board;
@@ -85,14 +88,14 @@ export class Board extends Component {
         this.isWin('X', board, {
           x,
           y
-        }, this.state.rule)
+        }, this.props.rule)
       } else {
         board[y][x] = 'O';
         player = 'player1';
         this.isWin('O', board, {
           x,
           y
-        }, this.state.rule);
+        }, this.props.rule);
       }
       this.setState({board, player});
     }
@@ -156,7 +159,7 @@ export class Board extends Component {
             ...r_nodes
           ],
           is_game_play: false
-        })
+        });
       }
     }
     find_right_root_node(position.x, position.y, this.state.rule.size)
@@ -175,7 +178,7 @@ export class Board extends Component {
             ...l_nodes
           ],
           is_game_play: false
-        })
+        });
       }
     }
   }
@@ -195,36 +198,37 @@ export class Board extends Component {
         return <Line winNodes={win_nodes} onTick={this.onTick} key={y} y={y} array={line}/>;
       })
   }
+  startNewGame() {
+    this.setState({
+      is_game_play: true,
+      player: 'player1',
+      board: Array(this.props.rule.size)
+        .fill(0)
+        .map(() => Array(this.props.rule.size).fill(null)),
+      win_nodes: []
+    });
+
+  }
   render() {
     return (
       <div>
-        <div className="col-4 shadow py-5 d-none px-4">
-          <div className="form-group">
-            <label htmlFor="">Game size:</label>
-            <input
-              onChange={async(e) => {
-              let value = e.target.value;
-              if (validator.isInt(value)) {
-                await this.setState(prevState => ({
-                  rule: {
-                    ...prevState.rule,
-                    size: parseInt(value, 10)
-                  }
-                }))
-              }
-              this.reConstructBoard()
-            }}
-              value={this.state.rule.size}
-              type="text"
-              className="form-control"/>
-          </div>
-          <div className="form-group">
-            <label htmlFor="">Match win:</label>
-            <input value={this.state.rule.match} type="text" className="form-control"/>
-          </div>
-          <div className="btn btn-outline-success mt-3">Start new game</div>
-        </div>
+        <Icon className="position-fixed">
+          {!this.state.is_game_play && (
+            <div>
+              <p className="animate lead mb-3">{`${this.state.player === 'player1'
+                  ? 'O'
+                  : 'X'} is a Winner`}</p>
+              <i
+                onClick=
+                { () => this.startNewGame() }
+                className="mx-auto fa-2x fas icon fa-gamepad"></i>
+            </div>
+          )
+}
+        </Icon>
+
         <BoardStyle className="d-flex justify-content-center align-items-center">
+
           {this.renderLine()}
         </BoardStyle>
       </div>
@@ -232,6 +236,32 @@ export class Board extends Component {
     );
   }
 }
+
+const Icon = styled.div `
+  .icon{
+    cursor: pointer;
+    color: black;
+   
+  }
+  .animate{
+    animation: popUp2 2s;
+    transition: all .2s
+  }
+  .icon:hover{
+    color: #ba68c8;
+  }
+  @keyframes popUp2 {
+    0%{
+      transform: scale(0)
+    }
+    85%{
+      transform: scale(4)
+    }
+    100%{
+      transform: scale(1)
+    }
+  }
+`
 
 const BoardStyle = styled.div `
   min-height: 60vh;
