@@ -12,6 +12,10 @@ export class Line extends Component {
         .map(value => {
           x++;
           return <Square
+            isWinNode={this
+            .props
+            .winNodes
+            .includes(x)}
             onTick={this.props.onTick}
             key={x}
             x={x}
@@ -22,7 +26,7 @@ export class Line extends Component {
   }
   render() {
     return (
-      <div className="d-block d-flex">
+      <div>
         {this.renderSquare()}
       </div>
     )

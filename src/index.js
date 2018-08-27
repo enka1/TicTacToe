@@ -7,8 +7,11 @@ import {Board} from './components/Board'
 class App extends Component {
   render() {
     return (
-      <div>
-        <Board/>
+      <div className="row w-100">
+        <div className="container">
+          <p className="display-4 w-100 text-center mb-5">Tic Tac Toe</p>
+          <Board/>
+        </div>
       </div>
     )
   }

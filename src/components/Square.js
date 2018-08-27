@@ -14,7 +14,9 @@ export class Square extends Component {
     return (
       <SquareStyle
         onClick={() => this.props.onTick(this.props.x, this.props.y)}
-        className="d-flex align-items-center justify-content-center">
+        className={"d-flex align-items-center justify-content-center " + (this.props.isWinNode
+        ? 'bg-warning'
+        : '')}>
         {this.renderContainer()}
       </SquareStyle>
     )
@@ -23,8 +25,8 @@ export class Square extends Component {
 
 const SquareStyle = styled.div `
   border: 0.5px solid black;
-  height: 4rem;
-  width: 4rem;
+  height: 3rem;
+  width: 3rem;
   &:hover{
     background-color: #e1f5fe;
     cursor: pointer;
