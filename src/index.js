@@ -8,8 +8,7 @@ class App extends Component {
   render() {
     return (
       <div className="row w-100">
-        <div className="container">
-          <p className="display-4 w-100 text-center mb-5">Tic Tac Toe</p>
+        <div className="container pt-3">
           <Board/>
         </div>
       </div>

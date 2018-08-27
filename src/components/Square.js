@@ -4,9 +4,15 @@ import styled from 'styled-components';
 export class Square extends Component {
   renderContainer() {
     if (this.props.value === 'X') {
-      return (<i className="fas fa-times"/>);
+      return (<i
+        className={"fas fa-times text-dark " + (this.props.isWinNode
+        ? 'win'
+        : '')}/>);
     } else if (this.props.value === 'O') {
-      return (<i className="far text-danger fa-circle"/>);
+      return (<i
+        className={"far text-danger fa-circle " + (this.props.isWinNode
+        ? 'win'
+        : '')}/>);
     }
     return '';
   }
@@ -14,9 +20,7 @@ export class Square extends Component {
     return (
       <SquareStyle
         onClick={() => this.props.onTick(this.props.x, this.props.y)}
-        className={"d-flex align-items-center justify-content-center " + (this.props.isWinNode
-        ? 'bg-warning'
-        : '')}>
+        className="d-flex align-items-center justify-content-center">
         {this.renderContainer()}
       </SquareStyle>
     )
@@ -24,6 +28,7 @@ export class Square extends Component {
 }
 
 const SquareStyle = styled.div `
+  font-size: 1rem;
   border: 0.5px solid black;
   height: 3rem;
   width: 3rem;

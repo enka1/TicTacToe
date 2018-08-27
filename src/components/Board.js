@@ -1,5 +1,7 @@
 import React, {Component} from 'react';
 import styled from 'styled-components'
+import validator from 'validator'
+
 import {Line} from './Line'
 
 let left_root_node = {},
@@ -53,8 +55,8 @@ export class Board extends Component {
       board: [],
       player: 'player1',
       rule: {
-        size: 5,
-        match: 3
+        size: 11,
+        match: 5
       },
       win_nodes: []
     }
@@ -62,12 +64,15 @@ export class Board extends Component {
       .onTick
       .bind(this);
   }
-  componentDidMount() {
+  reConstructBoard() {
     this.setState({
       board: Array(this.state.rule.size)
         .fill(0)
         .map(() => Array(this.state.rule.size).fill(null))
     })
+  }
+  componentDidMount() {
+    this.reConstructBoard()
   }
   onTick(x, y) {
     let board = this.state.board;
@@ -192,13 +197,60 @@ export class Board extends Component {
   }
   render() {
     return (
-      <BoardStyle className="d-flex justify-content-center align-items-center">
-        {this.renderLine()}
-      </BoardStyle>
+      <div>
+        <div className="col-4 shadow py-5 d-none px-4">
+          <div className="form-group">
+            <label htmlFor="">Game size:</label>
+            <input
+              onChange={async(e) => {
+              let value = e.target.value;
+              if (validator.isInt(value)) {
+                await this.setState(prevState => ({
+                  rule: {
+                    ...prevState.rule,
+                    size: parseInt(value, 10)
+                  }
+                }))
+              }
+              this.reConstructBoard()
+            }}
+              value={this.state.rule.size}
+              type="text"
+              className="form-control"/>
+          </div>
+          <div className="form-group">
+            <label htmlFor="">Match win:</label>
+            <input value={this.state.rule.match} type="text" className="form-control"/>
+          </div>
+          <div className="btn btn-outline-success mt-3">Start new game</div>
+        </div>
+        <BoardStyle className="d-flex justify-content-center align-items-center">
+          {this.renderLine()}
+        </BoardStyle>
+      </div>
+
     );
   }
 }
 
 const BoardStyle = styled.div `
-  min-height: 60vh
+  min-height: 60vh;
+  .win{
+    color: #311b92!important;
+    animation: popUp 2s;
+  }
+  @keyframes popUp{
+    0%{
+      opacity: 0;
+      transform: scale(0)
+    }
+    75%{
+      transform: scale(10)
+    }
+    100%{
+      opacity: 1;
+      transform: scale(1)
+      
+    }
+  }
 `
